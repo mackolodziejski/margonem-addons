@@ -19,10 +19,11 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
+
 // ==UserScript==
-// @name         Heroes on Discord
+// @name         Heroes on Discord TEST
 // @namespace    http://tampermonkey.net/
-// @version      2.8
+// @version      3.0.0
 // @description  Quickly send discord messages for heroes and titans
 // @author       Kris Aphalon
 // @match        https://*.margonem.pl/
@@ -55,7 +56,7 @@ SOFTWARE.*/
     style.appendChild(document.createTextNode(css))
     document.head.appendChild(style)
 
-    function sendDiscordAlert(webhookUrl, playerNick, npc, mapName, serverName)
+    async function sendDiscordAlert(webhookUrl, playerNick, npc, mapName, serverName)
     {
         let color = 8388608 //red
         let type1 = 'Tytan'
@@ -78,27 +79,29 @@ SOFTWARE.*/
         {
             addToThumbnail = 'https://micc.garmory-cdn.cloud/obrazki/npc/'
         }
-        //if (!npc.icon.startsWith('/')) npc.icon = '/' + npc.icon
 
-        const request = new XMLHttpRequest()
-        request.open('POST', webhookUrl, true)
-        request.setRequestHeader('Content-Type', 'application/json')
-        request.send(JSON.stringify({
+        const response = await fetch(addToThumbnail + npc.icon)
+        const fileObj = new File([await response.blob()], 'npc.gif')
+
+        const data = new FormData()
+        data.append(`files[0]`, fileObj)
+        data.append('payload_json', JSON.stringify({
             content: `${mapName} (${npc.x}, ${npc.y})\n(${type1}) @here`,
-            /* content: `**@here ${type1}:** ${npc.nick} - ${mapName} (${npc.x}, ${npc.y})`, */
             username: `${npc.nick}`,
-            avatar_url: `${addToThumbnail}${npc.icon}`,
+            // avatar_url: `attachment://npc.gif`,
             embeds: [{
                 color: color,
                 title: `${playerNick} (${Engine.hero.d.lvl}) znalazł ${type2}!`,
-                /* description: `${npc.nick} - ${mapName} (${npc.x}, ${npc.y}) - ${serverName}`, */
                 description: `${npc.nick} (${npc.lvl} lvl)\n${mapName} (${npc.x}, ${npc.y})`,
                 thumbnail: {
-                    url: `${addToThumbnail}${npc.icon}`
+                    url: `attachment://npc.gif`
                 },
                 timestamp: new Date().toISOString()
             }]
         }))
+        const request = new XMLHttpRequest()
+        request.open('POST', webhookUrl)
+        request.send(data)
     }
 
     function isHeros(npc)
