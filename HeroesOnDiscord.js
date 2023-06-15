@@ -21,7 +21,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.*/
 
 // ==UserScript==
-// @name         Heroes on Discord TEST
+// @name         Heroes on Discord
 // @namespace    http://tampermonkey.net/
 // @version      3.0.0
 // @description  Quickly send discord messages for heroes and titans
@@ -129,9 +129,7 @@ SOFTWARE.*/
         {
             g.worldConfig.getWorldName();
         }
-
     }
-
 
     function displayPopup(nick, npc, map)
     {
@@ -197,7 +195,6 @@ SOFTWARE.*/
                 sendDiscordAlert(settings.webhookUrl, name, npc, map.name, getServerName())
                 closePopup()
             }
-
         })
         buttonContainer.appendChild(yesButton)
 
