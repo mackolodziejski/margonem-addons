@@ -12,7 +12,7 @@
 // ==/UserScript==
 
 function logout(){
-	Engine.changePlayer.logout()
+    Engine.changePlayer.logout()
 }
 
 (function() {
@@ -25,4 +25,10 @@ function logout(){
     logoutIcon.title = 'Wyloguj się'
     logoutIcon.addEventListener('click', logout)
     document.getElementsByClassName('hud-container')[0].appendChild(logoutIcon)
+
+    document.addEventListener("keydown", function keySend(event) {
+        if (event.key == "Escape") {
+            logout()
+        }
+    });
 })();
