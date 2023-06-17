@@ -74,13 +74,8 @@ SOFTWARE.*/
             color = 12320855 //dark pink
         }
 
-        let addToThumbnail = ''
-        if (getCookie('interface') === 'ni')
-        {
-            addToThumbnail = 'https://micc.garmory-cdn.cloud/obrazki/npc/'
-        }
-
-        const response = await fetch(addToThumbnail + npc.icon)
+        let imagesBaseUrl = 'https://micc.garmory-cdn.cloud/obrazki/npc/'
+        const response = await fetch(imagesBaseUrl + npc.icon)
         const fileObj = new File([await response.blob()], 'npc.gif')
 
         const data = new FormData()
@@ -88,7 +83,7 @@ SOFTWARE.*/
         data.append('payload_json', JSON.stringify({
             content: `${mapName} (${npc.x}, ${npc.y})\n(${type1}) @here`,
             username: `${npc.nick}`,
-            // avatar_url: `attachment://npc.gif`,
+            avatar_url: 'https://cdn.discordapp.com/attachments/739058959083896844/1118230046683959307/heroes-on-discord-avatar.png',
             embeds: [{
                 color: color,
                 title: `${playerNick} (${Engine.hero.d.lvl}) znalazł ${type2}!`,
