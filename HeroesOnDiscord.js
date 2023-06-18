@@ -1,17 +1,13 @@
 /*MIT License
-
 Copyright (c) 2019-2021 Kris Aphalon
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
-
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -61,17 +57,20 @@ SOFTWARE.*/
         let color = 8388608 //red
         let type1 = 'Tytan'
         let type2 = 'tytana'
+        let avatarUrl = 'https://cdn.discordapp.com/attachments/1118442091610132531/1119945754392408125/titan.png'
         if (isHeros(npc))
         {
             type1 = 'Heros'
             type2 = 'herosa'
             color = 8388736 //purple
+            avatarUrl = 'https://cdn.discordapp.com/attachments/1118442091610132531/1119945312413433976/hero.png'
         }
         else if (isAdditionalNpcToSearch(npc))
         {
             type1 = ''
             type2 = 'npca'
             color = 12320855 //dark pink
+            avatarUrl = 'https://cdn.discordapp.com/attachments/1118442091610132531/1120105398058373240/npc.png'
         }
 
         let imagesBaseUrl = 'https://micc.garmory-cdn.cloud/obrazki/npc/'
@@ -83,11 +82,11 @@ SOFTWARE.*/
         data.append('payload_json', JSON.stringify({
             content: `${mapName} (${npc.x}, ${npc.y})\n(${type1}) @here`,
             username: `${npc.nick}`,
-            avatar_url: 'https://cdn.discordapp.com/attachments/739058959083896844/1118230046683959307/heroes-on-discord-avatar.png',
+            avatar_url: avatarUrl,
             embeds: [{
                 color: color,
                 title: `${playerNick} (${Engine.hero.d.lvl}) znalazł ${type2}!`,
-                description: `${npc.nick} (${npc.lvl} lvl)\n${mapName} (${npc.x}, ${npc.y})`,
+                description: prepareWebhookDescription(npc, mapName),
                 thumbnail: {
                     url: `attachment://npc.gif`
                 },
@@ -97,6 +96,15 @@ SOFTWARE.*/
         const request = new XMLHttpRequest()
         request.open('POST', webhookUrl)
         request.send(data)
+    }
+
+    function prepareWebhookDescription(npc, mapName)
+    {
+        var heroLvl = Engine.hero.d.lvl
+        var minLvl = Math.round((heroLvl - 4) / 1.2)
+        var maxLvl = Math.round((1.2 * heroLvl) + 4)
+        return `${npc.nick} (${npc.lvl} lvl)\n${mapName} (${npc.x}, ${npc.y})
+               Przedział bicia ${minLvl}-${heroLvl} lub ${heroLvl}-${maxLvl}`
     }
 
     function isHeros(npc)
